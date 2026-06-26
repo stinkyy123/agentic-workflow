@@ -26,12 +26,17 @@ leads to the lead sheet, and reports a summary back to the orchestrator / Albert
 2. **Enrich** — `WebFetch` each candidate's website / listing for: website, phone,
    owner_name, location, category, and ICP signals (review count, # of locations,
    business age, online-booking / receptionist hints).
-3. **Score** — apply the ICP rubric below; record a one-line `icp_reason`.
+3. **Score** — apply the **`icp-scoring` skill** (the single source of truth, also used by
+   the discovery agent + orchestrator); record a one-line `icp_reason`.
 4. **Push** — `Bash` `curl` POST each lead as JSON to the n8n webhook.
 5. **Report** — return a summary to the orchestrator/Albert: counts (found / scored /
    pushed), the top scorers with reasons, and any briefs it could not fulfill.
 
 ## ICP Rubric (1–5)
+
+> **Canonical location:** this rubric now lives in `.claude/skills/icp-scoring/SKILL.md` as
+> the single source of truth (reusable by prospecting, discovery, and the orchestrator). It
+> is reproduced below as design rationale; the skill is authoritative.
 
 Built around the "Goldilocks zone": big enough to justify the cost of a receptionist,
 small enough that the owner / decision-maker is reachable.
@@ -72,6 +77,7 @@ Agent sends these 9 fields as a JSON body:
 - **tools:** `Read, Write, WebSearch, WebFetch, Bash` (Bash used only for the `curl` push)
 - **model:** `sonnet` (research-heavy and high-volume; cheaper/faster than opus, plenty capable)
 - **memory:** `project` (matches the pipeline-manager pattern)
+- **Scoring:** applies the `icp-scoring` skill — the rubric is NOT embedded in the agent body
 - **Push policy:** push **all** scored leads (the sheet has `icp_score` for filtering)
 - **Per-run cap:** stop after **~25 businesses researched OR 10 qualified leads pushed**,
   whichever comes first — a hard cap so it can't run forever (per the `loop-design` skill).
@@ -85,8 +91,9 @@ Agent sends these 9 fields as a JSON body:
 ## Out of scope (v1)
 
 - Sink-side dedup (deferred; see follow-up above).
-- `icp-scoring` as a separate skill — the rubric is embedded in the agent for now. The
-  README lists `icp-scoring` as a skill; it can be extracted later without changing the agent's behavior.
+- *(Reversed 2026-06-26)* `icp-scoring` is now a **separate skill** and the single source of
+  truth for scoring — reusable by the discovery agent and orchestrator, not embedded in the
+  agent. See `.claude/skills/icp-scoring/SKILL.md`.
 - Reading the existing sheet to skip already-researched businesses (no list endpoint yet).
 
 ## Verification
