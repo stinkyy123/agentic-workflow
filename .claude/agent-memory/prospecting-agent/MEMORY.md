@@ -1,0 +1,1 @@
+- [Webhook Status](project_webhook_status.md) — n8n mmw-leads webhook working as of 2026-06-26 (was HTTP 500 due to Google Sheets schema mismatch, now fixed; returns 200 + stamps rows)

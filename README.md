@@ -27,12 +27,14 @@ No agent rebuild needed. You can stack multiple skills per topic
 - `loop-design` — standard for building verification loops: checkable goal,
   hard cap, separate scorer for subjective outputs, logging. Pull this in
   before writing any "iterate until X" task.
+- `cold-email` — voice, structure, and pass/fail rubric for cold outreach emails
+  (used by outreach; reusable by discovery/close later).
 
 ## Build order (do NOT build all at once)
 Build one agent end-to-end, prove it on real work, then add the next.
 
 1. ✅ Prospecting Agent — built (lowest risk, read-heavy, no send-gate)
-2. ⬜ Outreach Agent — drafts cold email / logs dial stats. SEND GATE: drafts only.
+2. ✅ Outreach Agent — drafts cold email (email-only v1; dial stats deferred). SEND GATE: drafts only.
 3. ⬜ Discovery/Close Agent — pre-call research, build-strategy doc, ROI math.
 4. ⬜ Build Team (parallel) — Build + Integration + QA agents, QA↔Build loop.
 5. ⬜ Handover Agent — handover package, backups, acceptance signoff.
