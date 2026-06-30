@@ -29,13 +29,20 @@ No agent rebuild needed. You can stack multiple skills per topic
   before writing any "iterate until X" task.
 - `cold-email` — voice, structure, and pass/fail rubric for cold outreach emails
   (used by outreach; reusable by discovery/close later).
+- `discovery-close` — product-agnostic discovery→close method (LRP, ROI from their
+  numbers, "don't price before scoped", build-strategy doc structure).
+- `offer-receptionist` — the AI-receptionist offer pack (discovery questions, stack,
+  pricing, ROI vars, objections). Swap in a sibling `offer-<product>` pack for new products.
+
+Process source of truth: [`docs/client-lifecycle-playbook.md`](docs/client-lifecycle-playbook.md).
 
 ## Build order (do NOT build all at once)
 Build one agent end-to-end, prove it on real work, then add the next.
 
 1. ✅ Prospecting Agent — built (lowest risk, read-heavy, no send-gate)
 2. ✅ Outreach Agent — drafts cold email (email-only v1; dial stats deferred). SEND GATE: drafts only.
-3. ⬜ Discovery/Close Agent — pre-call research, build-strategy doc, ROI math.
+3. ✅ Discovery/Close Agent — Mode 1 pre-call prep + Mode 2 build-strategy doc (ROI from real
+   discovery answers). Product-agnostic method + swappable offer pack.
 4. ⬜ Build Team (parallel) — Build + Integration + QA agents, QA↔Build loop.
 5. ⬜ Handover Agent — handover package, backups, acceptance signoff.
 6. ⬜ Retainer/Ops Agent — monitoring, monthly stats, scope-guard.
