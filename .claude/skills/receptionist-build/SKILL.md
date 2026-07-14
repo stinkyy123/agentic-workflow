@@ -13,6 +13,30 @@ Source of truth for the code and every incident: `BUILD-NOTES.md` in the `recept
 repo — read it before touching the worker. **Parameterize, never refactor:** the worker's logic is
 battle-tested; a needed logic change stops and asks Albert.
 
+## Before you build: sanity-check the config
+`node validate-config.js <client>` (exits 1 on a HIGH finding). It catches the two config-logic
+traps the code cannot:
+- an **`emergencyKeyword` that also names a normal service** — the worker's emergency guardrail
+  scans those keywords and returns *before any calendar path*, so **that service can never be
+  booked**. (An HVAC client with "no cooling" as both a service and an emergency keyword could
+  never book their most common job.)
+- a **`highTicketKeyword` matching a cheap job** — the documented "$199 faucet swap" footgun;
+  every one gets `high_ticket_review`-flagged for a human.
+
+These are **business decisions — surface them, never silently "fix" them.**
+
+## ⚠️ Known limitation: the worker does NOT enforce the schedule
+The worker enforces exactly `businessStartH` / `businessEndH`. **"Sun emergencies only", the
+same-day cutoff, the latest same-day slot, and the min fee are prompt-text only** — the model is
+*asked* to respect them, but nothing checks. If it proposes a Sunday 8 AM slot,
+`checkAvailability` reports it free and it gets booked. The config carries a structured
+`schedule` block for this, but **the worker doesn't read it yet** (worker-side enforcement is the
+next task). Say this out loud to Albert whenever a client's hours aren't uniform across the week.
+
+## Trade-agnostic wording
+`emergencyScreenQuestion` and `emergencyExamples` are config, not constants — set them for the
+client's trade. The defaults are plumbing; an HVAC agent must not screen callers for sewage.
+
 ## Golden rule: deploy the worker FIRST, then Retell
 A prompt expecting new worker behavior against an un-deployed worker is a silent mismatch.
 Worker-only changes need just `wrangler deploy`; prompt/tool changes need the full Retell dance.
