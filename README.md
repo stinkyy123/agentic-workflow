@@ -1,4 +1,4 @@
-# MakeMyWorkflow — Agent Team
+Agent Team
 
 Claude Code agents mapped onto the Client Lifecycle Playbook.
 
@@ -62,7 +62,7 @@ Build one agent end-to-end, prove it on real work, then add the next.
 
 ## Hard rules baked into agents
 - No agent sends email, places calls, provisions accounts, deploys, or moves money.
-  Those are human-gated — the agent prepares, Albert gives the go on each step.
+  Those are human-gated — the agent prepares.
 - Every agent is a sequential, gated **sub-agent**. The build is a single gated
   `build-agent`, not a parallel team.
 
