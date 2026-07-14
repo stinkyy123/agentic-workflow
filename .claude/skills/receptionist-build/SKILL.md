@@ -25,13 +25,18 @@ traps the code cannot:
 
 These are **business decisions — surface them, never silently "fix" them.**
 
-## ⚠️ Known limitation: the worker does NOT enforce the schedule
-The worker enforces exactly `businessStartH` / `businessEndH`. **"Sun emergencies only", the
-same-day cutoff, the latest same-day slot, and the min fee are prompt-text only** — the model is
-*asked* to respect them, but nothing checks. If it proposes a Sunday 8 AM slot,
-`checkAvailability` reports it free and it gets booked. The config carries a structured
-`schedule` block for this, but **the worker doesn't read it yet** (worker-side enforcement is the
-next task). Say this out loud to Albert whenever a client's hours aren't uniform across the week.
+## Schedule + timezone (now enforced server-side)
+- **`schedule` is enforced.** `checkAvailability` fails closed on a closed day, an hour outside
+  **that day's** window, a same-day request past `sameDayCutoffH`, or a same-day start past
+  `latestSameDaySlotH`. Alternatives stay inside the same window. **Emergencies bypass it** (they
+  never touch the calendar), so `emergencyOnlyDays` works. No `schedule` block → falls back to
+  `businessStartH`/`businessEndH`. `minFee` stays prompt-text (a quoting rule, not scheduling).
+- **`timezone` is load-bearing — get it right.** The worker's time math used to be hardcoded to
+  Eastern; a Phoenix caller asking for 2 PM was booked **3 hours early**. It now derives from
+  `BUSINESS.timezone`. The `eastern*` function names are **legacy** — they are timezone-generic.
+- ⚠️ **Redeploying BlueTap applies a real behavior change:** Sunday used to be silently bookable
+  and is now correctly refused; the 4 PM cutoff / 5 PM latest slot are now real. Say this out loud
+  before any BlueTap redeploy — it is the intended fix, but it is not a no-op for them.
 
 ## Trade-agnostic wording
 `emergencyScreenQuestion` and `emergencyExamples` are config, not constants — set them for the
