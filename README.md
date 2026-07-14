@@ -1,6 +1,5 @@
 Agent Team
 
-Claude Code agents mapped onto the Client Lifecycle Playbook.
 
 ## How this works
 - **Agents** live in `.claude/agents/` as markdown files. Each has YAML front
