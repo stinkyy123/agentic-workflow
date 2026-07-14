@@ -16,8 +16,8 @@ description: >
 | drafting cold email or logging dial stats | outreach-agent | DRAFT only, gate the send |
 | pre-call research on a prospect | discovery-agent | their site + GBP |
 | building the scope / ROI math / pricing | discovery-agent | never quote before scoped |
-| actually building the receptionist | build-team | parallel team, only for real builds |
-| running QA test scenarios | build-team (QA) | the 10-scenario log |
+| actually building the receptionist | build-agent | gated: config → render → deploy → QA |
+| running QA test scenarios | build-agent | the 10-scenario QA loop (inside the build) |
 | handover docs / backups / signoff | handover-agent | writes to Drive |
 | monitoring / monthly stats | retainer-agent | read + alert |
 | "is this in scope?" | retainer-agent (scope-guard) | run FIRST on expansion requests |
@@ -25,7 +25,7 @@ description: >
 ## Dependency rules
 Common chains (run in this order):
 - New lead → close: prospecting → discovery → outreach(draft) → [Albert sends]
-- Won deal → live: discovery(scope) → build-team → handover
+- Won deal → live: discovery(scope) → build-agent → handover
 - Independent / parallelizable: lead scoring of separate batches, research on
   multiple prospects, QA scenarios that don't depend on each other.
 

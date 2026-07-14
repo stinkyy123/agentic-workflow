@@ -33,6 +33,8 @@ No agent rebuild needed. You can stack multiple skills per topic
   numbers, "don't price before scoped", build-strategy doc structure).
 - `offer-receptionist` — the AI-receptionist offer pack (discovery questions, stack,
   pricing, ROI vars, objections). Swap in a sibling `offer-<product>` pack for new products.
+- `receptionist-build` — method + landmines for building/deploying a client receptionist from
+  the receptionist-template (deploy dance, publish/re-pin, Smarty policy, the 10-scenario QA loop).
 
 Process source of truth: [`docs/client-lifecycle-playbook.md`](docs/client-lifecycle-playbook.md).
 
@@ -43,9 +45,10 @@ Build one agent end-to-end, prove it on real work, then add the next.
 2. ✅ Outreach Agent — drafts cold email (email-only v1; dial stats deferred). SEND GATE: drafts only.
 3. ✅ Discovery/Close Agent — Mode 1 pre-call prep + Mode 2 build-strategy doc (ROI from real
    discovery answers). Product-agnostic method + swappable offer pack.
-4. ⬜ Build Team (parallel) — Build + Integration + QA agents, QA↔Build loop.
-5. ⬜ Handover Agent — handover package, backups, acceptance signoff.
-6. ⬜ Retainer/Ops Agent — monitoring, monthly stats, scope-guard.
+4. ✅ Build Agent — gated receptionist build (config → render → deploy → QA), stops at every human
+   gate. Drives the separate [receptionist-template](https://github.com/stinkyy123/receptionist-template) repo.
+5. ✅ Handover Agent — stub (Phase 3: Loom, one-pager, backups, acceptance signoff).
+6. ✅ Retainer/Ops Agent — stub (Phase 4: monitoring, monthly review, scope-guard).
 
 ## Agents
 | Agent | Type | Reads | Writes / acts |
@@ -53,17 +56,18 @@ Build one agent end-to-end, prove it on real work, then add the next.
 | Prospecting | sub-agent | lead list, web | lead list (append) |
 | Outreach | sub-agent | lead list, stats | Gmail DRAFTS only (you send) |
 | Discovery/Close | sub-agent | web, lead list, calendar | build-strategy docs |
-| Build Team | **team** | build files | n8n/Vapi/Twilio config |
+| Build | sub-agent (gated) | client scope, receptionist-template | rendered build, gated deploy + QA |
 | Handover | sub-agent | build files | Drive (docs + backups) |
 | Retainer/Ops | sub-agent | alerts, call data, Stripe | monthly stats |
 
 ## Hard rules baked into agents
-- No agent sends email, places calls, or moves money. Those are human-gated.
-- Agent teams are only used for the parallel Build cluster. Everything else is
-  sequential and runs better as sub-agents.
+- No agent sends email, places calls, provisions accounts, deploys, or moves money.
+  Those are human-gated — the agent prepares, Albert gives the go on each step.
+- Every agent is a sequential, gated **sub-agent**. The build is a single gated
+  `build-agent`, not a parallel team.
 
-## Enabling agent teams
-`.claude/settings.local.json` contains the experimental enable flag,
-`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` (verified against the official docs).
-Only needed for the parallel Build Team — the orchestrator and sub-agents work
-without it.
+## Agent teams (not required by this design)
+`.claude/settings.local.json` still carries the experimental flag
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` (verified against the official docs), but the
+build ended up as a single gated `build-agent`, so nothing in this repo depends on
+agent teams. The flag is harmless to leave enabled.
