@@ -35,7 +35,8 @@ agent must not screen callers for sewage):
 ## Flow (STOP at each 🚦 gate — explicit "go" required)
 1. **Clone the template:** `git clone https://github.com/stinkyy123/receptionist-template` (pull if present).
 2. **Generate config:** map the answers → `clients/<client>/config.json` against
-   `schema/client-config.schema.json`. Fill every required field; mark IDs that don't exist yet
+   `schema/client-config.schema.json`. Fill every required field (incl. **`avgTicket`** from the
+   discovery ROI numbers — it drives the dashboard revenue figure); mark IDs that don't exist yet
    (retellLlmId / retellAgentId / twilioFrom / sheetsId / calendarId / workerName / baseUrl) as TODO.
 3. **Sanity-check the config:** `node validate-config.js <client>`. It catches the config-logic
    traps the code can't — an `emergencyKeyword` that also names a normal service (**that service
@@ -50,6 +51,9 @@ agent must not screen callers for sewage):
    and return the IDs; you write them into the config. You NEVER create accounts, register A2P, or
    provision numbers yourself. Re-render after IDs land: `node render.js <client>` → review the dist.
    (`render.js` exits 3 while any `TODO` value remains — it will not green-light a deploy.)
+   Also generate the client dashboard secret here: `wrangler secret put DASHBOARD_SECRET`
+   (`openssl rand -hex 24`) — a Worker secret, never in the config. The `/d/<secret>` link is a
+   handover deliverable.
 6. 🚦 **GATE C — before ANY deploy.** Present exactly what will deploy. On Albert's go, follow the
    deploy dance in `receptionist-build` (worker first → Retell push → publish → **re-pin** the
    number). Never skip the re-pin.

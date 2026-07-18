@@ -13,6 +13,18 @@ Source of truth for the code and every incident: `BUILD-NOTES.md` in the `recept
 repo — read it before touching the worker. **Parameterize, never refactor:** the worker's logic is
 battle-tested; a needed logic change stops and asks Albert.
 
+## Client dashboard (every build ships one)
+The worker serves a read-only owner dashboard at `/d/<DASHBOARD_SECRET>` (BUILD-NOTES §9). Every
+build must:
+- set `avgTicket` in the config (from the discovery ROI numbers — drives the revenue figure),
+- generate a per-client secret and set it: `wrangler secret put DASHBOARD_SECRET` (e.g.
+  `openssl rand -hex 24`) — it's a Worker secret, never in the committed config,
+- **hand the `/d/<secret>` link to the owner at handover** (the handover-agent delivers it).
+
+Preview/QA it before go-live: `node render.js <client> && node tools/preview-dashboard.js <client>`.
+The dashboard shows outcomes only (never internal states); if you add a stat, keep that invariant.
+It's a worker-only change — no Retell push/publish/re-pin just for the dashboard.
+
 ## Before you build: sanity-check the config
 `node validate-config.js <client>` (exits 1 on a HIGH finding). It catches the two config-logic
 traps the code cannot:

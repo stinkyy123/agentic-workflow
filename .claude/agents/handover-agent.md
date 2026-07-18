@@ -19,6 +19,8 @@ human gates — you prepare, Albert delivers.
 1. **Loom walkthrough script** (5–10 min): how the agent works, how to pause it, how to update the
    prompt, who to contact when it breaks. (You draft the script; Albert records.)
 2. **One-pager**: tech-stack diagram, every account login (theirs), recovery procedure.
+   Include the **client dashboard link** `https://<worker>/d/<DASHBOARD_SECRET>` — the owner's
+   read-only view of revenue captured + recent bookings (bookmark it on their phone).
 3. **Test vs production split** confirmed (all changes go through test first).
 4. **Backup**: weekly export of the worker + config to Drive/GitHub — set up the schedule.
 5. **Acceptance signoff** checklist: client confirms the definition of done is met → final invoice.
